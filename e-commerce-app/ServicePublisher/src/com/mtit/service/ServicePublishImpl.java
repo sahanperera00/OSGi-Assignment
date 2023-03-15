@@ -1,6 +1,12 @@
 package com.mtit.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
+
+import com.mtit.dbconnection.DbConnection;
+import com.mtit.dbconnection.IDb;
 
 public class ServicePublishImpl implements ServicePublish {
 	Scanner input = new Scanner(System.in);
@@ -10,6 +16,15 @@ public class ServicePublishImpl implements ServicePublish {
 	private String password = "sahan123";
 	private String address = "No.199/E1, Pubudu Mawatha, Kopiyawatta, Ragama";
 	private String payment = "PayPal";
+
+	private Connection connection = null;
+	private Statement statement = null;
+	private IDb database;
+
+	public ServicePublishImpl() {
+		database = (IDb) new DbConnection();
+		connection = database.connection();
+	}
 
 	@Override
 	public void registerUser() {
@@ -58,7 +73,15 @@ public class ServicePublishImpl implements ServicePublish {
 			newUser.setPassword(password);
 		}
 		
-		System.out.println("\nUser registered successfully!");
+		String query = "INSERT INTO userdetails(firstName, lastName, email, password) VALUES ('" + fName + "', '" + lName + "', '" + email + "', '" + password + "')";
+		
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate(query);
+			System.out.println("\nUser registered successfully!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
