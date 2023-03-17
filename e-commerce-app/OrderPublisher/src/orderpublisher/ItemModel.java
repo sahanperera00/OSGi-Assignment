@@ -48,12 +48,4 @@ public class ItemModel {
 		System.out.println("ItemNo: " +this.itemNo + "\nItem name: " + this.itemName + 
 				"\nPrice: " + this.price);
 	}
-	
-//	public static void showItems() {
-//		for(ItemModel x : list) {
-//			System.out.println(x.getItemName() + "\t" + x.getItemNo() + "\t" + x.getPrice());
-//		}
-//	}
-
-	
 }

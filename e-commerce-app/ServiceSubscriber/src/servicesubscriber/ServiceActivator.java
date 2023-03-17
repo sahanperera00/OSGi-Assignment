@@ -22,7 +22,6 @@ public class ServiceActivator implements BundleActivator {
 		serviceImplement(servicePublish);
 	}
 
-	
 	public void stop(BundleContext context) throws Exception {
 		context.ungetService(serviceReference);
 	}
@@ -42,7 +41,7 @@ public class ServiceActivator implements BundleActivator {
 				System.out.println("2  - Update user details");
 				System.out.println("3  - Logout user\n");
 				System.out.print("Choose your option: ");
-				
+					
 				option = input.nextInt();
 				
 				switch(option) {
@@ -70,9 +69,13 @@ public class ServiceActivator implements BundleActivator {
 					case 2: instance = service.loginUser();
 						check = 1;
 						break;
+						
 				}
 			}
 		} while(option != 99);
+		
+		
 		return ;
+		
 	}
 }

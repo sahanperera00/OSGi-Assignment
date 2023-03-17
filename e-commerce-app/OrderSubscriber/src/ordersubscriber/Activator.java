@@ -1,124 +1,122 @@
 package ordersubscriber;
 
-import orderpublisher.IOrderService;
-import orderpublisher.ItemModel;
-import orderpublisher.OrderModel;
+import orderpublisher.IOrderServices;
+import orderpublisher.Item;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-
-
-
 public class Activator implements BundleActivator {
+
+	ServiceReference orderServiceReference;
 	
-	ServiceReference OrderServiceReference;
+	Scanner input = new Scanner(System.in);
 	
-	public void start(BundleContext context) throws Exception {
-		System.out.println("Start Order Subscriber\n=====================");
+	
+	public void start(BundleContext bundleContext) throws Exception {
+		System.out.println("Order Subscriber Up and Running\n\n\n\n");
+		orderServiceReference = bundleContext.getServiceReference(IOrderServices.class.getName());
+		IOrderServices order = (IOrderServices) bundleContext.getService(orderServiceReference);
 		
-		//Register the Order Subscriber Service
-		OrderServiceReference = context.getServiceReference(IOrderService.class.getName());
-		IOrderService orderService = (IOrderService)context.getService(OrderServiceReference);
+		displayKiosk(order);
+	}
+
+	public void stop(BundleContext bundleContext) throws Exception {
+		System.out.println("Order Subscriber Stopped!");
+	}
+	
+	private void displayKiosk(IOrderServices order) {
+		
+		//Ideal method is, fetching item data to an arraylist and viewing data throughout
+		System.out.println("== Lanka Mount Castle ==");
+		System.out.println("Welcome to the Lanka Mount Kiosk!");
+		System.out.println("1. Order merchandise\n2. Get your order history\n3. Delete orders\n4. Update pending orders");
+		System.out.println("0. Exit the Kiosk\n:");
 		
 		
-		Scanner in = new Scanner(System.in);
-		
-		System.out.println("Hello! Welcome to Fresheez!");
-		System.out.println("============================");
-		System.out.println("1. Order from Market \n2. Show all Orders\n3. Update Order\n4. Delete Order\n0. Exit");
-		
-		
-		int choice = in.nextInt();
-		while(choice != 1 || choice != 2 || choice != 3 || choice != 4) {
+		int option = input.nextInt();
+		do {
+			switch(option) {
+			case 1: displayMenu(order);
+					break;
+			case 2: showOrders(order);
+					break;
+			case 3: System.out.println("Delete Orders");
+					break;
+			case 4: updateOrders(order);
+					break;
+			case 0: System.out.println("Thank you for using Lanka Mount Castle Kiosk. Have a pleasant Day!");
+					return;
+					
+			default:System.out.println("Invalid input, Please try again.\n:");
+					option = input.nextInt();
+					break;
+					
+			}
 			
-			switch(choice){
-				case 1: marketMenu(orderService);
-						break;
-				
-				case 2: viewAllOrders(orderService);
-						break;
-				
-				case 3: updateOrders(orderService);
-						break;
-				
-				case 4: deleteOrders(orderService);
-						break;
-				
-				default: System.out.println("Invalid, Please try again");
-						 choice = in.nextInt();
-						 break;
-			}
-				System.out.print("1. Order from Market \n2. Show all Orders\n3. Update Order\n4. Delete Order\n0. Exit");
-				choice = in.nextInt();
-				if(choice == 0) {
-					System.out.println("Thank you for visiting Whatever this is. Have a Nice Day!");
-					break;
-				}
-		}
+			System.out.println("1. Order merchandise\n2. Get your order history\n3. Delete orders\n4. Update pending orders");
+			System.out.println("0. Exit the Kiosk\n:");
+			option = input.nextInt();
+
+
+		}while(option < 5);
+			
 	}
 	
+	//This method should be fetched by an ItemModel - but temporarily this will be made
 	
-	private void marketMenu(IOrderService order) {
+	private void displayMenu(IOrderServices order) {
 		
-		Scanner in = new Scanner(System.in);
+		Item caps = new Item("K2121", 2121, "Caps", 750.0);
+		Item shirts = new Item("K2133",2133,"Shirts",1500.0);
+		Item pants = new Item("K3142",3142,"Pants",2450.0);
+		Item cropTops = new Item("K4132",4132,"Torso",1250.0);
 		
-		ItemModel cap = new ItemModel(25, "Caps", 250.0);
-		ItemModel shirt = new ItemModel(23, "Shirts", 1000.0);
-		ItemModel pants = new ItemModel(27,"Pants",1250.0);
-		
-		ArrayList <ItemModel> items = new <ItemModel> ArrayList();
-		
-		//Adding the content to the list 
-		items.add(cap);
-		items.add(shirt);
+		List<Item> items = new ArrayList<Item>();
+		items.add(caps);
+		items.add(shirts);
 		items.add(pants);
+		items.add(cropTops);
 		
-		//Basic Implementation 
-		System.out.println("Hello Welcome to Fresheez");
-		System.out.println("Please select an Item you wish to order. You May enter the Item Number\n");
-		System.out.println("Item Name\tItem No\tItem Price\t");
-		
-		for(ItemModel x : items) {
-			System.out.println(x.getItemName() +"\t" +x.getItemNo() + "\t" + x.getPrice());
-		}		
-		
-		int choice = in.nextInt();
-		boolean bool = false;
-		ItemModel purchased = new ItemModel(0, null, 0);
-
-			for(ItemModel x : items) {
-				if(choice == x.getItemNo()) {
-					System.out.println("Item Number: " + x.getItemNo() + " has been put to order!");
-					bool = true;
-					purchased = x;
-					order.createOrder(purchased);
-					break;
-				}
-			}
+		System.out.println("KCode\tItem Name\nItem Price");
+		for(Item x : items) {
+			System.out.println(x.getKioskId() + "\t" + x.getItemName() + "\t Rs." + x.getItemPrice());
 		}
-	
-	private void viewAllOrders(IOrderService orderService) {
-		System.out.println("Shows All Orders Here");
+		System.out.println("Please enter the KCode you wish to purchase: ");
+		int product = input.nextInt();
+		order.createOrder(product, items);
+		
+		
+		//After the SQL content -> Consider the flow of information
+		
+//		if(orderReturn) {
+//			System.out.println("Do you wish to add another item? (y/n)");
+//			String value = input.nextLine().trim();
+//			if(value.equalsIgnoreCase("y")) {
+//				displayMenu(order);
+//			}
+//		}
+		
+	}
+	private void showOrders(IOrderServices order) {
+		
+		order.viewAllOrders();
 	}
 	
-	
-	private void updateOrders(IOrderService orderService) {
-		System.out.println("SQL Content to update orders");
+	//Yet to be implemented
+	private void deleteOrders(IOrderServices order) {
+		order.viewOrder();
+		order.deleteOrder();
 	}
 	
-
-	private void deleteOrders(IOrderService orderService) {
-		System.out.println("Deletes one order via SQL");
+	private void updateOrders(IOrderServices order) {
+		
+		order.updateOrder();
 	}
 	
-	public void stop(BundleContext context) {
-		System.out.println("Thank you for Ordering. Have a nice Day!");
-		context.ungetService(OrderServiceReference);
-	}
-
 }

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ECommerceDB
+Bundle-SymbolicName: ECommerceDB
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: ecommercedb.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: ECommerceDB
+Import-Package: com.mysql.jdbc,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: ecommercedb

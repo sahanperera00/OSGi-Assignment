@@ -6,22 +6,21 @@ import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
-		
-	ServiceRegistration OrderServiceRegistration;
+	//Registers the publish Service functions 
+	private ServiceRegistration orderRegistration;
 
-	public void start(BundleContext context) throws Exception {
-		System.out.println("Orders Publisher Service Started");
-		//Creating an Order service interface implementation
-		IOrderService order = new OrderService();
+	public void start(BundleContext bundleContext) throws Exception {
 		
-		//Assigning the Service Registration to the Order Service provided.
-		OrderServiceRegistration = context.registerService(IOrderService.class.getName(), order, null);
+		System.out.println("Order Service Publisher Started!");
+		IOrderServices orderServices = (IOrderServices) new OrderServices();
+		
+		//Registers the orderService Implementation 
+		orderRegistration = bundleContext.registerService(IOrderServices.class.getName(),orderServices,null);
 	}
 
-	public void stop(BundleContext context) throws Exception {
-		//Stopping the plug in project
-		System.out.println("Order Publisher Service Stopped");
-		OrderServiceRegistration.unregister();
+	public void stop(BundleContext bundleContext) throws Exception {
+		System.out.println("Order Services Publisher Stopped!");
+		orderRegistration.unregister();
 	}
 
 }
