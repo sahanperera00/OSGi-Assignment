@@ -11,6 +11,7 @@ import org.osgi.framework.ServiceReference;
 import itempublisher.ItemPublish;
 import orderpublisher.IOrderServices;
 import orderpublisher.Item;
+import paymentpublisher.IPaymentService;
 import userpublisher.UserModel;
 import userpublisher.IUserPublisher;
 
@@ -22,6 +23,8 @@ public class UserActivator implements BundleActivator {
 	ServiceReference orderServiceReference;
 	@SuppressWarnings("rawtypes")
 	ServiceReference itemServiceReference;
+	@SuppressWarnings("rawtypes")
+	ServiceReference paymentServiceReference;
 
 	Scanner input = new Scanner(System.in);
 
@@ -35,15 +38,18 @@ public class UserActivator implements BundleActivator {
 
 		itemServiceReference = context.getServiceReference(ItemPublish.class.getName());
 		ItemPublish itemServicePublish = (ItemPublish) context.getService(itemServiceReference);
+
+		paymentServiceReference = context.getServiceReference(IPaymentService.class.getName());
+		IPaymentService paymentServicePublish = (IPaymentService) context.getService(paymentServiceReference);
 		
-		serviceImplement(userServicePublish, orderServicePublish, itemServicePublish);
+		serviceImplement(userServicePublish, orderServicePublish, itemServicePublish, paymentServicePublish);
 	}
 	
 	public void stop(BundleContext context) throws Exception {
 		context.ungetService(userServiceReference);
 	}
 
-	public void serviceImplement(IUserPublisher servicePublish, IOrderServices orderServicePublish, ItemPublish itemServicePublish) {
+	public void serviceImplement(IUserPublisher servicePublish, IOrderServices orderServicePublish, ItemPublish itemServicePublish, IPaymentService paymentServicePublish) {
 		int option = 0;
 		int check = 0;
 		UserModel instance = null;
@@ -56,11 +62,8 @@ public class UserActivator implements BundleActivator {
 				System.out.println("2  - Update user details");
 				System.out.println("3  - Logout user");
 				
-//				String x = instance.getRole();
-//				System.out.println(x);
-				
 				if(instance.getRole().equalsIgnoreCase("admin")) {
-					System.out.print("4  - Items\n");
+					System.out.println("4  - Items\n");
 					
 					System.out.print("Choose your option: ");
 					option = input.nextInt();
@@ -77,6 +80,8 @@ public class UserActivator implements BundleActivator {
 					case 4: 
 						displayItem(itemServicePublish);
 						break;
+					default:
+						option = 0;	
 					}
 				} else {
 					System.out.println("4  - Orders");
@@ -98,13 +103,14 @@ public class UserActivator implements BundleActivator {
 						displayKiosk(orderServicePublish);
 						break;
 					case 5: 
-						
+						displayPayment(paymentServicePublish);
 						break;
+					default:
+						option = 0;	
 					}
 				}
 			} else {
-				System.out.println("\nE-Commerce App");
-				System.out.println("===============================");
+				System.out.println("\n================= Lanka Mount Castle ===================");
 				System.out.println("1  - Register User");
 				System.out.println("2  - Login User");
 				System.out.println("99 - Exit\n");
@@ -118,7 +124,8 @@ public class UserActivator implements BundleActivator {
 						break;
 					case 2: 
 						instance = servicePublish.loginUser();
-						check = 1;
+						if(instance != null)
+							check = 1;
 						break;
 				}
 			}
@@ -147,91 +154,64 @@ public class UserActivator implements BundleActivator {
 				case -1:
 					break;
 				default:
-					System.out.println("\nInvalid Number!");
+					System.out.println("Invalid Number!");
 			}
 		} while(option != -1);
 	}
 	
 	private void displayItem(ItemPublish item) {
-		
-		@SuppressWarnings("resource")
-		
-		Scanner input = new Scanner(System.in);
 		int option;
 		String subOption = "y";
-		String password = "Chanux123";
-		String username = "Chanux123";
-		
-		
-		System.out.println("\n\n\n");
-		System.out.println("=================Lanka Mount Castle===================\n");
-		
-		System.out.println("==========This is Inventory Management Section========\n");
-		System.out.println("\n\nPlease Enter Admin Username: ");
-		username = input.nextLine().trim();
-		
-		if(username.equals("Chanux123")) {
-			System.out.println("\nPlease Enter Admin Password: ");
-			password = input.nextLine().trim();
-			if(password.equals("Chanux123")) {
-				
-				System.out.println("\n-------------------WELCOME BACK-----------------------\n");
-				System.out.println("1  - Add an Item");
-				System.out.println("2  - Get all Item details");
-				System.out.println("3  - Get details about a specific Item ");
-				System.out.println("4  - Update an Item ");
-				System.out.println("5  - Delete an Item ");
-				System.out.println("0  - Exit the Managemnet\n:");
-				System.out.println("\n=====================================================");
-				System.out.println("\n=====================================================");
-				
-				System.out.print("\n\nChoose an option from above : \n\n");
-				
-				option = Integer.parseInt(input.nextLine().trim());
-				
-				switch(option) {
-					case 1:
-						item.addItem();
-						
-						while(subOption.equals("y")) {
-							System.out.println("\n\nDo you want to Add Another product (y/n)");
-							subOption = input.nextLine().trim();
-				
-							if(subOption.equals("y")||subOption.equals("Y")) {
-								item.addItem();
-							}
-						}
-						displayItem(item);
-						break;
-					case 2:
-						item.getAllItems();
-						displayItem(item);
-						break;
-					case 3:
-						item.getByID();
-						displayItem(item);
-						break;
-					case 4:
-						item.updateItem();
-						displayItem(item);
-					case 5:
-						item.deleteItem();
-						displayItem(item);
-						break;
-					case 0: 
-						System.out.println("Thank you for using Lanka Mount Castle Management . Have a Great Day!");
-					return;
+		System.out.println("\n\n==========This is Inventory Management Section========\n");
+		System.out.println("1  - Add an Item");
+		System.out.println("2  - Get all Item details");
+		System.out.println("3  - Get details about a specific Item ");
+		System.out.println("4  - Update an Item ");
+		System.out.println("5  - Delete an Item ");
+		System.out.println("0  - Exit the Managemnet\n:");
+		System.out.println("\n=====================================================");
+		System.out.println("\n=====================================================");
+		System.out.print("\n\nChoose an option from above : \n\n");
+
+		option = input.nextInt();
+		input.nextLine();
+			
+		switch(option) {
+			case 1:
+				item.addItem();
 					
-					default:
-						System.out.println("Incorrect Input. Try Again...");
-						displayItem(item);
+				while(subOption.equals("y")) {
+					System.out.println("\n\nDo you want to Add Another product (y/n)");
+					subOption = input.nextLine();
+			
+					if(subOption.equalsIgnoreCase("y")) {
+						item.addItem();
+					}
 				}
-			}else {
-				System.out.println("Sorry Invalid Password !!! Try Again!! ");
+				displayItem(item);
+				break;
+			case 2:
+				item.getAllItems();
+				displayItem(item);
+				break;
+			case 3:
+				item.getByID();
+				displayItem(item);
+				break;
+			case 4:
+				item.updateItem();
+				displayItem(item);
+			case 5:
+				item.deleteItem();
+				displayItem(item);
+				break;
+			case 0: 
+				System.out.println("Thank you for using Lanka Mount Castle Management . Have a Great Day!");
+				return;
+			default:
+				System.out.println("Incorrect Input. Try Again...");
+				displayItem(item);
 			}
-		}else {
-			System.out.println("Sorry Invalid Username!!! Try Again!!!");
-		}
 	}
 	
 	private void displayKiosk(IOrderServices order) {
@@ -330,5 +310,65 @@ public class UserActivator implements BundleActivator {
 	
 	private void viewOneOrder(IOrderServices order) {
 		order.viewOrder();
+	}
+	
+private void displayPayment(IPaymentService payment) {
+		int option;
+		String subOption = "y";
+		
+		System.out.println("\n\n\n");
+		System.out.println("----------Card Payment Details Section ----------\n");
+		System.out.println("1  - Add new card details");
+		System.out.println("2  - Get all card details");
+		System.out.println("3  - Get card details by Id ");
+		System.out.println("4  - Update Card by the Id");
+		System.out.println("5  - Delete Card by the Id");
+		System.out.println("0  - Exit");
+		System.out.println("\n--------------------------------------------------");
+		System.out.println("\n--------------------------------------------------");
+		
+		System.out.print("\n\nChoose an option : \n\n");
+		
+		option = input.nextInt();
+		input.nextLine();
+		
+		switch(option) {
+			case 1:
+				payment.addPayment();
+				
+				while(subOption.equals("y")) {
+					System.out.println("\n\nDo you want to Add Another card (y/n)");
+					subOption = input.nextLine();
+		
+					if(subOption.equalsIgnoreCase("y")) {
+						payment.addPayment();
+					}
+				}
+				displayPayment(payment);
+				break;
+			case 2:
+				payment.viewAllPayments();	
+				displayPayment(payment);
+				break;
+			case 3:
+				payment.viewPayment();
+				displayPayment(payment);
+				break;
+			case 4:
+				payment.updatePayment();
+				displayPayment(payment);
+				break;
+			case 5:
+				payment.deletePayment();
+				displayPayment(payment);
+				break;
+			case 0:
+				System.out.println("Thank you for using Lanka Mount Castle. Have a pleasant Day!");
+				return;
+			
+			default:
+				System.out.println("Incorrect Input. Try Again...");
+				displayPayment(payment);
+		}
 	}
 }

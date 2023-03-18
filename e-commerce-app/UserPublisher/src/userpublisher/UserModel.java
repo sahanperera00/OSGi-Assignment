@@ -8,7 +8,6 @@ public class UserModel {
 	private String password;
 	private String role;
 	private String billingAddress;
-	private String paymentMethod;
 	
 	private UserModel() {}
 	
@@ -58,11 +57,5 @@ public class UserModel {
 	}
 	public void setBillingAddress(String billingAddress) {
 		this.billingAddress = billingAddress;
-	}
-	public String getPaymentMethod() {
-		return paymentMethod;
-	}
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
 	}
 }

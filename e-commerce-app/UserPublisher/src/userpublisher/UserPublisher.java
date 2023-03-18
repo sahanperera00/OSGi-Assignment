@@ -157,7 +157,6 @@ public class UserPublisher implements IUserPublisher {
 				loginUser.setPassword(rs.getString("password"));
 				loginUser.setRole(rs.getString("role"));
 				loginUser.setBillingAddress(rs.getString("address"));
-				loginUser.setPaymentMethod(rs.getString("payment"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -170,7 +169,7 @@ public class UserPublisher implements IUserPublisher {
 	public void viewUser(UserModel instance) {
 		System.out.println("\nUser Details:");
 		System.out.println("===============================");
-		System.out.println("Name: " + instance.getFirstName() + " " + instance.getLastName() + "\nEmail: " + instance.getEmail() + "\nPassword: " + instance.getPassword() + "\nAddress: " + instance.getBillingAddress() + "\nPayment method: " + instance.getPaymentMethod());
+		System.out.println("Name: " + instance.getFirstName() + " " + instance.getLastName() + "\nEmail: " + instance.getEmail() + "\nPassword: " + instance.getPassword() + "\nAddress: " + instance.getBillingAddress());
 	}
 
 	@Override
@@ -187,8 +186,6 @@ public class UserPublisher implements IUserPublisher {
 			System.out.println("2  - Update user lastname");
 			System.out.println("3  - Update user password");
 			System.out.println("4  - Update user address");
-			System.out.println("5  - Update user payment"
-					);
 			System.out.println("-1 - Back\n");
 			System.out.print("Choose your option: ");
 			
@@ -197,7 +194,7 @@ public class UserPublisher implements IUserPublisher {
 			
 			switch(option) {
 				case 1: 
-					System.out.print("Enter your first name(" + instance.getFirstName() + "): ");
+					System.out.print("\nEnter your first name(" + instance.getFirstName() + "): ");
 					instance.setFirstName(input.nextLine());
 					
 					while(instance.getFirstName().isEmpty()) {
@@ -221,7 +218,7 @@ public class UserPublisher implements IUserPublisher {
 					break;
 					
 				case 2: 
-					System.out.print("Enter your last name(" + instance.getLastName() + "): ");
+					System.out.print("\nEnter your last name(" + instance.getLastName() + "): ");
 					instance.setLastName(input.nextLine());
 					
 					while(instance.getLastName().isEmpty()) {
@@ -245,7 +242,7 @@ public class UserPublisher implements IUserPublisher {
 					break;
 					
 				case 3: 
-					System.out.print("Enter your password(" + instance.getPassword() + "): ");
+					System.out.print("\nEnter your password(" + instance.getPassword() + "): ");
 					instance.setPassword(input.nextLine());
 					
 					while(instance.getPassword().isEmpty()) {
@@ -269,7 +266,7 @@ public class UserPublisher implements IUserPublisher {
 					break;
 					
 				case 4: 
-					System.out.print("Enter your address(" + instance.getBillingAddress() + "): ");
+					System.out.print("\nEnter your address(" + instance.getBillingAddress() + "): ");
 					instance.setBillingAddress(input.nextLine());;
 					
 					while(instance.getBillingAddress().isEmpty()) {
@@ -282,30 +279,6 @@ public class UserPublisher implements IUserPublisher {
 					try {
 						stmt = connection.prepareStatement(query);
 						stmt.setString(1, instance.getBillingAddress());
-						stmt.setString(2, instance.getEmail());
-						
-						if(stmt.execute())
-							System.out.println("Updated successfully!\n");
-
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					break;
-					
-				case 5: 
-					System.out.print("Enter your payment method(" + instance.getPaymentMethod() + "): ");
-					instance.setPaymentMethod(input.nextLine());
-					
-					while(instance.getPaymentMethod().isEmpty()) {
-						System.out.print("Payment method shuold not be empty!\nEnter your payment method(" + instance.getPaymentMethod() + "): ");
-						instance.setPaymentMethod(input.nextLine());
-					}
-	
-					query = "UPDATE userdetails SET payment = ? WHERE email = ?";
-					
-					try {
-						stmt = connection.prepareStatement(query);
-						stmt.setString(1, instance.getPaymentMethod());
 						stmt.setString(2, instance.getEmail());
 						
 						if(stmt.execute())

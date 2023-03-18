@@ -9,4 +9,5 @@ Automatic-Module-Name: UserSubscriber
 Import-Package: itempublisher,
  orderpublisher,
  org.osgi.framework;version="1.3.0",
+ paymentpublisher,
  userpublisher
