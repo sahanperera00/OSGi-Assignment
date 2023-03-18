@@ -6,6 +6,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class UserActivator implements BundleActivator {
 
+	@SuppressWarnings("rawtypes")
 	ServiceRegistration publishServiceRegistration;
 	
 	public void start(BundleContext context) throws Exception {

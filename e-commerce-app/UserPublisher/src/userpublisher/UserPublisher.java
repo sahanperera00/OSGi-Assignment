@@ -155,6 +155,7 @@ public class UserPublisher implements IUserPublisher {
 				loginUser.setLastName(rs.getString("lastName"));
 				loginUser.setEmail(rs.getString("email"));
 				loginUser.setPassword(rs.getString("password"));
+				loginUser.setRole(rs.getString("role"));
 				loginUser.setBillingAddress(rs.getString("address"));
 				loginUser.setPaymentMethod(rs.getString("payment"));
 			}
