@@ -174,14 +174,14 @@ public class UserPublisher implements IUserPublisher {
 
 	@Override
 	public void updateUser(UserModel instance) {
-		System.out.println("\nUpdate User Details:");
-		System.out.println("===============================");
 		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
 		int check = 1;
 		String query = "";
 
 		while(check == 1) {
+			System.out.println("\nUpdate User Details:");
+			System.out.println("===============================");
 			System.out.println("1  - Update user firstname");
 			System.out.println("2  - Update user lastname");
 			System.out.println("3  - Update user password");
@@ -209,8 +209,8 @@ public class UserPublisher implements IUserPublisher {
 						stmt.setString(1, instance.getFirstName());
 						stmt.setString(2, instance.getEmail());
 						
-						if(stmt.execute())
-							System.out.println("Updated successfully!\n");
+						stmt.execute();
+						System.out.println("Updated successfully!\n");
 						
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -233,8 +233,8 @@ public class UserPublisher implements IUserPublisher {
 						stmt.setString(1, instance.getLastName());
 						stmt.setString(2, instance.getEmail());
 						
-						if(stmt.execute())
-							System.out.println("Updated successfully!\n");
+						stmt.execute();
+						System.out.println("Updated successfully!\n");
 
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -257,8 +257,8 @@ public class UserPublisher implements IUserPublisher {
 						stmt.setString(1, instance.getPassword());
 						stmt.setString(2, instance.getEmail());
 						
-						if(stmt.execute())
-							System.out.println("Updated successfully!\n");
+						stmt.execute();
+						System.out.println("Updated successfully!\n");
 
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -281,8 +281,8 @@ public class UserPublisher implements IUserPublisher {
 						stmt.setString(1, instance.getBillingAddress());
 						stmt.setString(2, instance.getEmail());
 						
-						if(stmt.execute())
-							System.out.println("Updated successfully!\n");
+						stmt.execute();
+						System.out.println("Updated successfully!\n");
 
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -306,10 +306,8 @@ public class UserPublisher implements IUserPublisher {
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1, instance.getEmail());
 			
-			if (stmt.execute())
-				System.out.println("User deleted successfully!\n");
-			else
-				System.out.println("Try again!\n");
+			stmt.execute();
+			System.out.println("User deleted successfully!\n");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

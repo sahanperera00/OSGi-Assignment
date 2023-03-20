@@ -9,18 +9,15 @@ public class ItemActivator implements BundleActivator {
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
-		
-		System.out.println("Item Publisher started");
 		ItemPublish publisherService = new ItemPublishImpl();
 		publishServiceRegistration = context.registerService(ItemPublish.class.getName(), publisherService, null);
+		System.out.println("Item Publisher Started!");
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		System.out.println("publisher stop");
-		
 		publishServiceRegistration.unregister();
-		
+		System.out.println("Item Publisher Stoped!");
 	}
 	
 	
