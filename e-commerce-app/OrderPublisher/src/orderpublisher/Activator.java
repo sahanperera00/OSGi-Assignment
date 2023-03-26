@@ -10,17 +10,14 @@ public class Activator implements BundleActivator {
 	private ServiceRegistration orderRegistration;
 
 	public void start(BundleContext bundleContext) throws Exception {
-		
-		System.out.println("Order Service Publisher Started!");
 		IOrderServices orderServices = (IOrderServices) new OrderServices();
-		
-		//Registers the orderService Implementation 
 		orderRegistration = bundleContext.registerService(IOrderServices.class.getName(),orderServices,null);
+		System.out.println("Order Publisher Started!");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
-		System.out.println("Order Services Publisher Stopped!");
 		orderRegistration.unregister();
+		System.out.println("Order Publisher Stoped!");
 	}
 
 }

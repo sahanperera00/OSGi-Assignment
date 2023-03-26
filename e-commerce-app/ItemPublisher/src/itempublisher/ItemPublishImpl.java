@@ -161,7 +161,7 @@ public class ItemPublishImpl implements ItemPublish {
 		System.out.println("\n    Item ID             Item Type            Item Name                Description         Price(LKR)   Discount(%)    New Price(LKR) ");
 		System.out.println("----------------------------------------------------------------------------------------------------------------------------------------\n");
 		for(ItemModel x: itemList) {
-			 System.out.printf("%10s %20s %20s %30s %15d      %.2f         %.2f\n" ,x.getItemId(),x.getItemType(), x.getItemName(), x.getDescription(),  x.getDiscount() ,x.getPrice(), ( x.getPrice() -( x.getPrice()* x.getDiscount() *0.01)));
+			 System.out.printf("%10s %20s %20s %30s %15d      %.2f         %.2f\n" ,x.getItemId(),x.getItemType(), x.getItemName(), x.getDescription(),  x.getDiscount() ,x.getPrice(), (x.getDiscount() -( x.getPrice()* x.getDiscount() *0.01)));
 			//System.out.println(x.getItemId() + "\t" + x.getItemType() + "\t" + x.getItemName() + "\t" + x.getDescription() + "\t" + x.getPrice() + "\t" + x.getDiscount() + "\t" + ( x.getPrice() -( x.getPrice()* x.getDiscount() *0.01)) );
 			
 		}

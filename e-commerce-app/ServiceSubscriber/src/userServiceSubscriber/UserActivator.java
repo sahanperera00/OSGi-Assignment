@@ -41,12 +41,17 @@ public class UserActivator implements BundleActivator {
 
 		paymentServiceReference = context.getServiceReference(IPaymentService.class.getName());
 		IPaymentService paymentServicePublish = (IPaymentService) context.getService(paymentServiceReference);
+		System.out.println("Subscriber Started!");
 		
 		serviceImplement(userServicePublish, orderServicePublish, itemServicePublish, paymentServicePublish);
 	}
 	
 	public void stop(BundleContext context) throws Exception {
 		context.ungetService(userServiceReference);
+		context.ungetService(orderServiceReference);
+		context.ungetService(itemServiceReference);
+		context.ungetService(paymentServiceReference);
+		System.out.println("Subscriber Stoped!");
 	}
 
 	public void serviceImplement(IUserPublisher servicePublish, IOrderServices orderServicePublish, ItemPublish itemServicePublish, IPaymentService paymentServicePublish) {
@@ -61,9 +66,10 @@ public class UserActivator implements BundleActivator {
 				System.out.println("1  - View user details");
 				System.out.println("2  - Update user details");
 				System.out.println("3  - Logout user");
+				System.out.println("4  - Delete user");
 				
 				if(instance.getRole().equalsIgnoreCase("admin")) {
-					System.out.println("4  - Items\n");
+					System.out.println("5  - Items\n");
 					
 					System.out.print("Choose your option: ");
 					option = input.nextInt();
@@ -74,18 +80,21 @@ public class UserActivator implements BundleActivator {
 					case 2: servicePublish.updateUser(instance);
 						break;
 					case 3: 
-//						servicePublish.deleteUser(instance);
 						check = 0;
 						break;
 					case 4: 
+						servicePublish.deleteUser(instance);
+						check = 0;
+						break;
+					case 5: 
 						displayItem(itemServicePublish);
 						break;
 					default:
 						option = 0;	
 					}
 				} else {
-					System.out.println("4  - Orders");
-					System.out.println("5  - Payments\n");
+					System.out.println("5  - Orders");
+					System.out.println("6  - Payments\n");
 					
 					System.out.print("Choose your option: ");
 					option = input.nextInt();
@@ -96,13 +105,16 @@ public class UserActivator implements BundleActivator {
 					case 2: servicePublish.updateUser(instance);
 						break;
 					case 3: 
-//						servicePublish.deleteUser(instance);
 						check = 0;
 						break;
 					case 4: 
-						displayKiosk(orderServicePublish);
+						servicePublish.deleteUser(instance);
+						check = 0;
 						break;
 					case 5: 
+						displayKiosk(orderServicePublish);
+						break;
+					case 6: 
 						displayPayment(paymentServicePublish);
 						break;
 					default:
