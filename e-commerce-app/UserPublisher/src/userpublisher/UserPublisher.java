@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Scanner;
 import ecommercedb.EcommerceDb;
 import ecommercedb.IEcommerceDb;
@@ -13,6 +14,7 @@ public class UserPublisher implements IUserPublisher {
 	private PreparedStatement stmt = null;
 	private ResultSet rs;
 	private IEcommerceDb database;
+	UserModel modelInstance = UserModel.getInstance();
 	Scanner input = new Scanner(System.in);
 	
 	public UserPublisher() {
@@ -106,11 +108,12 @@ public class UserPublisher implements IUserPublisher {
 	}
 
 	@Override
-	public UserModel loginUser() {
+	public HashMap<String, String> loginUser() {
 		System.out.println("\nLogin User (Press -1 to exit)");
 		System.out.println("===============================");
 
 		UserModel loginUser = UserModel.getInstance();
+		HashMap<String, String> user = new HashMap<String, String>();
 
 		System.out.print("Enter your email: ");
 		loginUser.setEmail(input.nextLine());
@@ -151,29 +154,36 @@ public class UserPublisher implements IUserPublisher {
 			rs = stmt.executeQuery();
 			
 			if(rs.next()) {
-				loginUser.setFirstName(rs.getString("firstName"));
-				loginUser.setLastName(rs.getString("lastName"));
-				loginUser.setEmail(rs.getString("email"));
-				loginUser.setPassword(rs.getString("password"));
-				loginUser.setRole(rs.getString("role"));
-				loginUser.setBillingAddress(rs.getString("address"));
+				modelInstance.setFirstName(rs.getString("firstName"));
+				modelInstance.setLastName(rs.getString("lastName"));
+				modelInstance.setEmail(rs.getString("email"));
+				modelInstance.setPassword(rs.getString("password"));
+				modelInstance.setRole(rs.getString("role"));
+				modelInstance.setBillingAddress(rs.getString("address"));
+
+				user.put("firstName", rs.getString("firstName"));
+				user.put("lastName", rs.getString("lastName"));
+				user.put("email", rs.getString("email"));
+				user.put("password", rs.getString("password"));
+				user.put("role", rs.getString("role"));
+				user.put("address", rs.getString("address"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return loginUser;
+		return user;
 	}
 
 	@Override
-	public void viewUser(UserModel instance) {
+	public void viewUser() {
 		System.out.println("\nUser Details:");
 		System.out.println("===============================");
-		System.out.println("Name: " + instance.getFirstName() + " " + instance.getLastName() + "\nEmail: " + instance.getEmail() + "\nPassword: " + instance.getPassword() + "\nAddress: " + instance.getBillingAddress());
+		System.out.println("Name: " + modelInstance.getFirstName() + " " + modelInstance.getLastName() + "\nEmail: " + modelInstance.getEmail() + "\nPassword: " + modelInstance.getPassword() + "\nAddress: " + modelInstance.getBillingAddress());
 	}
 
 	@Override
-	public void updateUser(UserModel instance) {
+	public void updateUser() {
 		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
 		int check = 1;
@@ -194,20 +204,20 @@ public class UserPublisher implements IUserPublisher {
 			
 			switch(option) {
 				case 1: 
-					System.out.print("\nEnter your first name(" + instance.getFirstName() + "): ");
-					instance.setFirstName(input.nextLine());
+					System.out.print("\nEnter your first name(" + modelInstance.getFirstName() + "): ");
+					modelInstance.setFirstName(input.nextLine());
 					
-					while(instance.getFirstName().isEmpty()) {
-						System.out.print("First name shuold not be empty!\nEnter your first name(" + instance.getFirstName() + "): ");
-						instance.setFirstName(input.nextLine());
+					while(modelInstance.getFirstName().isEmpty()) {
+						System.out.print("First name shuold not be empty!\nEnter your first name(" + modelInstance.getFirstName() + "): ");
+						modelInstance.setFirstName(input.nextLine());
 					}
 					
 					query = "UPDATE userdetails SET firstName = ? WHERE email = ?";
 					
 					try {
 						stmt = connection.prepareStatement(query);
-						stmt.setString(1, instance.getFirstName());
-						stmt.setString(2, instance.getEmail());
+						stmt.setString(1, modelInstance.getFirstName());
+						stmt.setString(2, modelInstance.getEmail());
 						
 						stmt.execute();
 						System.out.println("Updated successfully!\n");
@@ -218,20 +228,20 @@ public class UserPublisher implements IUserPublisher {
 					break;
 					
 				case 2: 
-					System.out.print("\nEnter your last name(" + instance.getLastName() + "): ");
-					instance.setLastName(input.nextLine());
+					System.out.print("\nEnter your last name(" + modelInstance.getLastName() + "): ");
+					modelInstance.setLastName(input.nextLine());
 					
-					while(instance.getLastName().isEmpty()) {
-						System.out.print("Last name shuold not be empty!\nEnter your last name(" + instance.getLastName() + "): ");
-						instance.setLastName(input.nextLine());
+					while(modelInstance.getLastName().isEmpty()) {
+						System.out.print("Last name shuold not be empty!\nEnter your last name(" + modelInstance.getLastName() + "): ");
+						modelInstance.setLastName(input.nextLine());
 					}
 					
 					query = "UPDATE userdetails SET lastName = ? WHERE email = ?";
 					
 					try {
 						stmt = connection.prepareStatement(query);
-						stmt.setString(1, instance.getLastName());
-						stmt.setString(2, instance.getEmail());
+						stmt.setString(1, modelInstance.getLastName());
+						stmt.setString(2, modelInstance.getEmail());
 						
 						stmt.execute();
 						System.out.println("Updated successfully!\n");
@@ -242,20 +252,20 @@ public class UserPublisher implements IUserPublisher {
 					break;
 					
 				case 3: 
-					System.out.print("\nEnter your password(" + instance.getPassword() + "): ");
-					instance.setPassword(input.nextLine());
+					System.out.print("\nEnter your password(" + modelInstance.getPassword() + "): ");
+					modelInstance.setPassword(input.nextLine());
 					
-					while(instance.getPassword().isEmpty()) {
-						System.out.print("Password shuold not be empty!\nEnter your password(" + instance.getPassword() + "): ");
-						instance.setPassword(input.nextLine());
+					while(modelInstance.getPassword().isEmpty()) {
+						System.out.print("Password shuold not be empty!\nEnter your password(" + modelInstance.getPassword() + "): ");
+						modelInstance.setPassword(input.nextLine());
 					}
 	
 					query = "UPDATE userdetails SET password = ? WHERE email = ?";
 					
 					try {
 						stmt = connection.prepareStatement(query);
-						stmt.setString(1, instance.getPassword());
-						stmt.setString(2, instance.getEmail());
+						stmt.setString(1, modelInstance.getPassword());
+						stmt.setString(2, modelInstance.getEmail());
 						
 						stmt.execute();
 						System.out.println("Updated successfully!\n");
@@ -266,20 +276,20 @@ public class UserPublisher implements IUserPublisher {
 					break;
 					
 				case 4: 
-					System.out.print("\nEnter your address(" + instance.getBillingAddress() + "): ");
-					instance.setBillingAddress(input.nextLine());;
+					System.out.print("\nEnter your address(" + modelInstance.getBillingAddress() + "): ");
+					modelInstance.setBillingAddress(input.nextLine());;
 					
-					while(instance.getBillingAddress().isEmpty()) {
-						System.out.print("Address shuold not be empty!\nEnter your address(" + instance.getBillingAddress() + "): ");
-						instance.setBillingAddress(input.nextLine());
+					while(modelInstance.getBillingAddress().isEmpty()) {
+						System.out.print("Address shuold not be empty!\nEnter your address(" + modelInstance.getBillingAddress() + "): ");
+						modelInstance.setBillingAddress(input.nextLine());
 					}
 	
 					query = "UPDATE userdetails SET address = ? WHERE email = ?";
 					
 					try {
 						stmt = connection.prepareStatement(query);
-						stmt.setString(1, instance.getBillingAddress());
-						stmt.setString(2, instance.getEmail());
+						stmt.setString(1, modelInstance.getBillingAddress());
+						stmt.setString(2, modelInstance.getEmail());
 						
 						stmt.execute();
 						System.out.println("Updated successfully!\n");
@@ -299,14 +309,15 @@ public class UserPublisher implements IUserPublisher {
 	}
 
 	@Override
-	public void deleteUser(UserModel instance) {
+	public void deleteUser() {
 		String query = "DELETE FROM userdetails WHERE email = ?";
 		
         try {
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, instance.getEmail());
+			stmt.setString(1, modelInstance.getEmail());
 			
 			stmt.execute();
+			modelInstance = null;
 			System.out.println("User deleted successfully!\n");
 			
 		} catch (SQLException e) {

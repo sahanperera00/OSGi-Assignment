@@ -23,7 +23,6 @@ public class OrderServices implements IOrderServices {
 	
 	
 	Scanner input = new Scanner(System.in);
-	 
 	public OrderServices() {
 		super();
 		ecommerceDb = (IEcommerceDb) new EcommerceDb();
@@ -105,9 +104,14 @@ public class OrderServices implements IOrderServices {
 			e.printStackTrace();
 		}
 		
-		System.out.println("OrderID\tItem\tItemNo\tPrice\tQty\tTotal");
+//		System.out.println("OrderID\tItem\tItemNo\tPrice\tQty\tTotal");
+		System.out.println("----------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("\n    Order ID             Item          Item ID		Price(LKR)       Quantity		Total ");
+		System.out.println("----------------------------------------------------------------------------------------------------------------------------------------\n");
 		for(Order x: orderList) {
-			System.out.println(x.getOrderId() + "\t" + x.getItemName() + "\t" + x.getItemNo() + "\t" + x.getPrice() + "\t" + x.getQty() + "\t" + x.getTotal());
+			System.out.printf("%10s %20s %15s %15f %15d",x.getOrderId(),x.getItemName(),x.getItemNo(),x.getPrice(),x.getQty());
+			System.out.println("\t\t\t" + x.getTotal());
+			//System.out.println(x.getOrderId() + "\t" + x.getItemName() + "\t" + x.getItemNo() + "\t" + x.getPrice() + "\t" + x.getQty() + "\t" + x.getTotal());
 			
 		}
 		System.out.println("\n");
@@ -142,7 +146,7 @@ public class OrderServices implements IOrderServices {
 						System.out.println("Price:\t" + x.getPrice());
 						System.out.println("Quantity:\t" + x.getQty());
 						System.out.println("Total:\t"+ x.getPrice() * x.getQty());
-						System.out.println("=============================\n\n");
+						System.out.println("==========================\n\n");
 						
 					}catch(SQLException e) {
 						System.out.println("Error with Order");

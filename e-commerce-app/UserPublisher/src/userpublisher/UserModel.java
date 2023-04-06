@@ -9,8 +9,6 @@ public class UserModel {
 	private String role;
 	private String billingAddress;
 	
-	private UserModel() {}
-	
 	public static UserModel getInstance() {
 		if(instance == null) {
 			synchronized(UserModel.class) {

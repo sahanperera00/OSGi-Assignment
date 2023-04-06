@@ -1,6 +1,7 @@
 package userServiceSubscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,7 +13,6 @@ import itempublisher.ItemPublish;
 import orderpublisher.IOrderServices;
 import orderpublisher.Item;
 import paymentpublisher.IPaymentService;
-import userpublisher.UserModel;
 import userpublisher.IUserPublisher;
 
 public class UserActivator implements BundleActivator {
@@ -27,6 +27,7 @@ public class UserActivator implements BundleActivator {
 	ServiceReference paymentServiceReference;
 
 	Scanner input = new Scanner(System.in);
+	HashMap<String, String> instance = null;
 
 	@SuppressWarnings("unchecked")
 	public void start(BundleContext context) throws Exception {
@@ -54,36 +55,35 @@ public class UserActivator implements BundleActivator {
 		System.out.println("Subscriber Stoped!");
 	}
 
-	public void serviceImplement(IUserPublisher servicePublish, IOrderServices orderServicePublish, ItemPublish itemServicePublish, IPaymentService paymentServicePublish) {
+	public void serviceImplement(IUserPublisher userServicePublish, IOrderServices orderServicePublish, ItemPublish itemServicePublish, IPaymentService paymentServicePublish) {
 		int option = 0;
 		int check = 0;
-		UserModel instance = null;
 		
 		do {
 			if(check == 1) {
-				System.out.println("\nHello " + instance.getFirstName() + " " + instance.getLastName());
+				System.out.println("\nHello " + instance.get("firstName") + " " + instance.get("lastName"));
 				System.out.println("===============================");
 				System.out.println("1  - View user details");
 				System.out.println("2  - Update user details");
 				System.out.println("3  - Logout user");
 				System.out.println("4  - Delete user");
 				
-				if(instance.getRole().equalsIgnoreCase("admin")) {
+				if(instance.get("role").equalsIgnoreCase("admin")) {
 					System.out.println("5  - Items\n");
 					
 					System.out.print("Choose your option: ");
 					option = input.nextInt();
 					
 					switch(option) {
-					case 1: servicePublish.viewUser(instance);
+					case 1: userServicePublish.viewUser();
 						break;
-					case 2: servicePublish.updateUser(instance);
+					case 2: userServicePublish.updateUser();
 						break;
 					case 3: 
 						check = 0;
 						break;
 					case 4: 
-						servicePublish.deleteUser(instance);
+						userServicePublish.deleteUser();
 						check = 0;
 						break;
 					case 5: 
@@ -100,15 +100,15 @@ public class UserActivator implements BundleActivator {
 					option = input.nextInt();
 					
 					switch(option) {
-					case 1: servicePublish.viewUser(instance);
+					case 1: userServicePublish.viewUser();
 						break;
-					case 2: servicePublish.updateUser(instance);
+					case 2: userServicePublish.updateUser();
 						break;
 					case 3: 
 						check = 0;
 						break;
 					case 4: 
-						servicePublish.deleteUser(instance);
+						userServicePublish.deleteUser();
 						check = 0;
 						break;
 					case 5: 
@@ -132,10 +132,10 @@ public class UserActivator implements BundleActivator {
 				
 				switch(option) {
 					case 1: 
-						registerImplementation(servicePublish);
+						registerImplementation(userServicePublish);
 						break;
 					case 2: 
-						instance = servicePublish.loginUser();
+						instance = userServicePublish.loginUser();
 						if(instance != null)
 							check = 1;
 						break;
@@ -174,6 +174,7 @@ public class UserActivator implements BundleActivator {
 	private void displayItem(ItemPublish item) {
 		int option;
 		String subOption = "y";
+		System.out.println("=================Lanka Mount Castle===================\n");
 		System.out.println("\n\n==========This is Inventory Management Section========\n");
 		System.out.println("1  - Add an Item");
 		System.out.println("2  - Get all Item details");
@@ -325,62 +326,63 @@ public class UserActivator implements BundleActivator {
 	}
 	
 private void displayPayment(IPaymentService payment) {
-		int option;
-		String subOption = "y";
-		
-		System.out.println("\n\n\n");
-		System.out.println("----------Card Payment Details Section ----------\n");
-		System.out.println("1  - Add new card details");
-		System.out.println("2  - Get all card details");
-		System.out.println("3  - Get card details by Id ");
-		System.out.println("4  - Update Card by the Id");
-		System.out.println("5  - Delete Card by the Id");
-		System.out.println("0  - Exit");
-		System.out.println("\n--------------------------------------------------");
-		System.out.println("\n--------------------------------------------------");
-		
-		System.out.print("\n\nChoose an option : \n\n");
-		
-		option = input.nextInt();
-		input.nextLine();
-		
-		switch(option) {
-			case 1:
-				payment.addPayment();
-				
-				while(subOption.equals("y")) {
-					System.out.println("\n\nDo you want to Add Another card (y/n)");
-					subOption = input.nextLine();
-		
-					if(subOption.equalsIgnoreCase("y")) {
-						payment.addPayment();
-					}
-				}
-				displayPayment(payment);
-				break;
-			case 2:
-				payment.viewAllPayments();	
-				displayPayment(payment);
-				break;
-			case 3:
-				payment.viewPayment();
-				displayPayment(payment);
-				break;
-			case 4:
-				payment.updatePayment();
-				displayPayment(payment);
-				break;
-			case 5:
-				payment.deletePayment();
-				displayPayment(payment);
-				break;
-			case 0:
-				System.out.println("Thank you for using Lanka Mount Castle. Have a pleasant Day!");
-				return;
+	int option;
+	String subOption = "y";
+	
+	System.out.println("\n");
+	System.out.println("===================Lanka Mount Castle======================\n");
+	System.out.println("===================Card Payment Details Section=================\n");
+	System.out.println("1  - Add new card details");
+	System.out.println("2  - Get all card details");
+	System.out.println("3  - Get card details by card number ");
+	System.out.println("4  - Update Card by the card number");
+	System.out.println("5  - Delete Card by the Id");
+	System.out.println("0  - Exit");
+	System.out.println("\n----------------------------------------------------------------------");
+	
+	
+	System.out.print("\n\nChoose an option : ");
+	
+	option = input.nextInt();
+	input.nextLine();
+	
+	switch(option) {
+		case 1:
+			payment.addPayment();
 			
-			default:
-				System.out.println("Incorrect Input. Try Again...");
-				displayPayment(payment);
+			while(subOption.equals("y")) {
+				System.out.println("\n\nDo you want to Add Another card (y/n)");
+				subOption = input.nextLine();
+	
+				if(subOption.equalsIgnoreCase("y")) {
+					payment.addPayment();
+				}
+			}
+			displayPayment(payment);
+			break;
+		case 2:
+			payment.viewAllPayments();	
+			displayPayment(payment);
+			break;
+		case 3:
+			payment.viewPayment();
+			displayPayment(payment);
+			break;
+		case 4:
+			payment.updatePayment();
+			displayPayment(payment);
+			break;
+		case 5:
+			payment.deletePayment();
+			displayPayment(payment);
+			break;
+		case 0:
+//			System.out.println("Thank you for using Lanka Mount Castle. Have a pleasant Day!");
+			return;
+		
+		default:
+			System.out.println("Incorrect Input. Try Again...");
+			displayPayment(payment);
 		}
 	}
 }

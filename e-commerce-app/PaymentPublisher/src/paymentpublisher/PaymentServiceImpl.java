@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Set;
 
 import ecommercedb.EcommerceDb;
 import ecommercedb.IEcommerceDb;
@@ -38,6 +37,8 @@ public class PaymentServiceImpl implements IPaymentService{
 		
 		PaymentModel pm1 = new PaymentModel();
 		
+		System.out.println("\n====================Add a new card===================\n");
+		
 		System.out.println("Enter Name on card:");
 		pm1.setCardName(sc.nextLine());
 		
@@ -52,9 +53,7 @@ public class PaymentServiceImpl implements IPaymentService{
 		sc.nextLine();
 		
 		
-		System.out.println("Card details successfully added");
-		
-		try {
+				try {
 			
 			String query = "INSERT INTO paymentmodels(cardName,cardNo,expiryDate,cvv) VALUES(?, ?, ?, ?)";
 			
@@ -89,11 +88,11 @@ public class PaymentServiceImpl implements IPaymentService{
 	@Override
 	public void viewPayment() {
 		
-		System.out.print("\nPlease enter the Card number you wish  to view:\n");
-		int cardNo = sc.nextInt();
-		sc.nextLine();
+		System.out.print("\nPlease enter the card number you wish  to view:\n");
+		String cardNo = sc.nextLine();
+//		sc.nextLine();
 		
-		String query = "SELECT * FROM paymentmodels WHERE id = '"+cardNo+"'";
+		String query = "SELECT * FROM paymentmodels WHERE cardNo = '"+cardNo+"'";
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -101,16 +100,17 @@ public class PaymentServiceImpl implements IPaymentService{
 			
 			while(resultSet.next()) {
 				
-				System.out.println("============================================Card Details===========================================\n\n"
-						+ "===========================================================================================================================");
+				System.out.println("----------------------------------------------------------------------------------------------------------------------------------------");
+				System.out.println("\n    Payment ID          Card Name          Card No             Expiry Date         CVV");
+				System.out.println("----------------------------------------------------------------------------------------------------------------------------------------\n");
 				
 				System.out.printf
 				(
-					"%20d %20s %20d %30s %20s \n", 
+					"%10s %20s %25s %15s %13d \n", 
 						
-					resultSet.getInt("id"),
+					resultSet.getString("id"),
 					resultSet.getString("cardName"),
-					resultSet.getInt("cardNo"),
+					resultSet.getString("cardNo"),
 					resultSet.getString("expiryDate"),
 					resultSet.getInt("cvv")
 				);
@@ -152,13 +152,21 @@ public class PaymentServiceImpl implements IPaymentService{
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println("CardID\tCardName\tCardNo\tExpiryDate\tCVV");
-		for(PaymentModel x: paymentList) {
-			System.out.println(x.getId() + "\t" + x.getCardName() + "\t" + x.getCardNo() + "\t" + x.getCardExpiryDate() + "\t" + x.getCvv());
+	
 			
-		}
-		System.out.println("\n");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------------------");
+			System.out.println("\n    Payment ID            Card Name           Card No              Expiry Date            CVV");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------------------\n");
+			for(PaymentModel x: paymentList) {
+				 System.out.printf("%10s %23s %23s %18s %15d\n" ,x.getId(),x.getCardName(), x.getCardNo(), x.getCardExpiryDate(),  x.getCvv());
+				 //System.out.println(x.getItemId() + "\t" + x.getItemType() + "\t" + x.getItemName() + "\t" + x.getDescription() + "\t" + x.getPrice() + "\t" + x.getDiscount() + "\t" + ( x.getPrice() -( x.getPrice()* x.getDiscount() *0.01)) );
+				 
+			}
+			System.out.println("\n");
+			System.out.println("----------------------------------------------------------------------------------------------------------------------------------------\n");
+			
+		
+			
 		return paymentList;
 	}
 
@@ -169,23 +177,24 @@ public class PaymentServiceImpl implements IPaymentService{
 		System.out.print("\nPlease enter the Card No you wish to Update:\n");
 		ArrayList<PaymentModel> paymentList =this.viewAllPayments();
 		
-		String cardNo = sc.nextLine();
+		
+		String cardNo = sc.nextLine().trim();
 		boolean status = false;
 		while(!status) {
 			for(PaymentModel x :paymentList) {
-				if(cardNo.equalsIgnoreCase(x.getId())) {
+				if(cardNo.equalsIgnoreCase(x.getCardNo())) {
 					status = true;
-					
-					System.out.print("Please enter the new expiry date: ");
+					System.out.print("Please note that only expiry date can be updated!\n");
+					System.out.print("Please enter the new card expiry date: ");
 					String cardExpiryDate = sc.nextLine();
-					String update = "UPDATE paymentmodels SET expiryDate = ? where id = ?";
+					String update = "UPDATE paymentmodels SET expiryDate = ? where cardNo = ?";
 					
 					try {
 						preparedStatement = connection.prepareStatement(update);
 						preparedStatement.setString(1, cardExpiryDate);
 						preparedStatement.setString(2, cardNo);
 						preparedStatement.executeUpdate();
-						System.out.println("Card Successfully Updated\n\n=============================");
+						System.out.println("\n\nCard Successfully Updated\n\n==============Updated card details===============");
 						
 						System.out.println("PaymentID:\t" + x.getId());
 						System.out.println("Card Name:\t"+ x.getCardName());
@@ -196,7 +205,7 @@ public class PaymentServiceImpl implements IPaymentService{
 						System.out.println("=============================\n\n");
 						
 					}catch(SQLException e) {
-						System.out.println("Error with Order");
+						System.out.println("Error with Card");
 						System.out.println(e.getMessage());
 					}
 					break;
@@ -205,7 +214,7 @@ public class PaymentServiceImpl implements IPaymentService{
 				}
 			}
 			if(status == false) {
-				System.out.println("Order number mentioned does not exist. Please try again.\n");
+				System.out.println("Card number mentioned does not exist. Please try again.\n");
 				break;
 			}
 		}
@@ -218,7 +227,7 @@ public class PaymentServiceImpl implements IPaymentService{
 	public void deletePayment() {
 		
 		int paymentId;
-		
+		System.out.println("==============Delete Card=================");
 		System.out.println("please enter payment ID:");
 		paymentId = sc.nextInt();
 		sc.nextLine();

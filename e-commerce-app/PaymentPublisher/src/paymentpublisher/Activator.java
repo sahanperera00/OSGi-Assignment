@@ -9,14 +9,14 @@ public class Activator implements BundleActivator {
 private ServiceRegistration serviceRegistration;
 	
 	public void start(BundleContext context) throws Exception {
+		System.out.println("Publisher service started");
 		IPaymentService payment = new PaymentServiceImpl();
 		serviceRegistration = context.registerService(IPaymentService.class.getName(), payment, null);
-		System.out.println("Payment Publisher Started!");
 	}
 
 	public void stop(BundleContext context) throws Exception {
+		System.out.println("Publisher service stopped");
 		serviceRegistration.unregister();
-		System.out.println("Payment Publisher Stoped!");
 	}
 
 
